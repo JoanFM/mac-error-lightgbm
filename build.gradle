@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "https://dl.bintray.com/spark-packages/maven" }
+        mavenLocal()
+        flatDir {
+            dirs "$rootProject.projectDir/libs"
+        }
+    }
+}
+
+plugins {
+    id "com.github.maiflai.scalatest" version "0.25"
+}
+
+allprojects {
+    repositories {
+        maven { url "https://dl.bintray.com/spark-packages/maven" }
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
+}
+
+project.ext {
+    versions = [
+            mmlspark: '0.18.1',
+            pegdown: '1.6.0',
+            ranklib: '2.10.1',
+            scala: '2.11.8',
+            scala_dep: '2.11',
+            scala_test: '3.0.0',
+            spark: '2.4.3',
+            spark_testing: '0.12.0'
+    ]
+
+    libraries = [
+            mmlspark: "com.microsoft.ml.spark:mmlspark_${versions.scala_dep}:${versions.mmlspark}",
+            pegdown: "org.pegdown:pegdown:${versions.pegdown}",
+            ranklib: "org.codelibs:ranklib:$versions.ranklib",
+            scala: "org.scala-lang:scala-library:${versions.scala}",
+            scala_test: "org.scalatest:scalatest_${versions.scala_dep}:${versions.scala_test}",
+            spark_core: "org.apache.spark:spark-core_${versions.scala_dep}:${versions.spark}",
+            spark_sql: "org.apache.spark:spark-sql_${versions.scala_dep}:${versions.spark}"
+    ]
+}
+
+dependencies {
+    compile libraries.mmlspark,
+            libraries.ranklib,
+            libraries.scala,
+            libraries.spark_sql
+            //files("mmlspark-assembly-1.0.0-rc1-13-9ba54497-20191114-1501-SNAPSHOT.jar")
+
+    testCompile libraries.scala_test,
+            libraries.spark_core
+
+    testRuntime libraries.pegdown
+}
